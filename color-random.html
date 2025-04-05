@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>ColorMap Lab</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    .palette {
+      margin-bottom: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    .title {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .preview {
+      display: flex;
+      align-items: center;
+      margin-top: 5px;
+      flex-wrap: wrap;
+    }
+    .color-box {
+      width: 100px;
+      height: 40px;
+      margin: 5px;
+      line-height: 40px;
+      text-align: center;
+      color: #fff;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    #controls {
+      margin-bottom: 20px;
+    }
+    input[type="number"] {
+      width: 60px;
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1 style="text-align: center;">ColorMap Lab</h1>
+  <div style="text-align: center; line-height: 1.5; font-size: 16px; margin-top: -10px; margin-bottom: 20px;">
+    Team of drug design and discovery<br>
+    Dr. Sean
+  </div>
+  <div id="controls">
+    Display the number of color combinations（1-21）：
+    <input type="number" id="countInput" min="1" max="21" value="6">
+    <button onclick="renderPalettes()">Confirm</button>
+  </div>
+  <div id="palettes"></div>
+
+  <script>
+    const interpolateColor = (low, high, factor) => {
+      const hexToRgb = hex => hex.match(/\w{2}/g).map(x => parseInt(x, 16));
+      const rgbToHex = rgb => '#' + rgb.map(x => x.toString(16).padStart(2, '0')).join('');
+      const [r1, g1, b1] = hexToRgb(low);
+      const [r2, g2, b2] = hexToRgb(high);
+      const r = Math.round(r1 + (r2 - r1) * factor);
+      const g = Math.round(g1 + (g2 - g1) * factor);
+      const b = Math.round(b1 + (b2 - b1) * factor);
+      return rgbToHex([r, g, b]);
+    };
+
+    const predefinedPalettes = [
+      { name: "红色渐变", low: "#fee5d9", high: "#e31a1c" },
+      { name: "橙色渐变", low: "#feedde", high: "#fd8d3c" },
+      { name: "黄色渐变", low: "#ffffb2", high: "#fec44f" },
+      { name: "绿色渐变", low: "#e5f5e0", high: "#2ca25f" },
+      { name: "青色渐变", low: "#e0f3f8", high: "#3182bd" },
+      { name: "蓝色渐变", low: "#e0ecf4", high: "#3182bd" },
+      { name: "紫色渐变", low: "#f2f0f7", high: "#9e1a5e" },
+      { name: "粉色渐变", low: "#fde0dd", high: "#c51b8a" },
+      { name: "灰色渐变", low: "#f0f0f0", high: "#636363" },
+      { name: "靛紫渐变", low: "#efedf5", high: "#756bb1" },
+      { name: "蓝紫渐变", low: "#dadaeb", high: "#6a51a3" },
+      { name: "橄榄绿渐变", low: "#f7fcb9", high: "#addd8e" },
+      { name: "砖红渐变", low: "#fdd0a2", high: "#e6550d" },
+      { name: "灰蓝渐变", low: "#d0d1e6", high: "#3690c0" },
+      { name: "土黄渐变", low: "#fff7bc", high: "#fec44f" },
+      { name: "烟紫渐变", low: "#dadaeb", high: "#807dba" },
+      { name: "森林绿渐变", low: "#edf8e9", high: "#238b45" },
+      { name: "冰蓝渐变", low: "#deebf7", high: "#3182bd" },
+      { name: "莓紫渐变", low: "#f7f4f9", high: "#af3c88" },
+      { name: "夜蓝渐变", low: "#f7fbff", high: "#08306b" },
+      { name: "棕色渐变", low: "#fbe9e7", high: "#8d6e63" }
+    ];
+
+    function getRandomizedPalettes(array) {
+      return array
+        .map(value => ({ value, sort: Math.random() }))
+        .sort((a, b) => a.sort - b.sort)
+        .map(({ value }) => value);
+    }
+
+    function renderPalettes() {
+      const count = Math.min(Math.max(parseInt(document.getElementById("countInput").value), 1), 21);
+      const container = document.getElementById("palettes");
+      container.innerHTML = "";
+
+      const palettesToShow = (count === 21)
+        ? predefinedPalettes.slice(0, 21)  // 固定顺序
+        : getRandomizedPalettes(predefinedPalettes).slice(0, count);  // 随机选择
+
+      for (let i = 0; i < count; i++) {
+        const palette = palettesToShow[i];
+        const div = document.createElement("div");
+        div.className = "palette";
+
+        const colors = [];
+        for (let j = 0; j < 10; j++) {
+          const factor = j / 9;
+          colors.push(interpolateColor(palette.low, palette.high, factor));
+        }
+
+        div.innerHTML = `
+          <div class="title">${palette.name}</div>
+          <div class="preview">
+            ${colors.map(color => `<div class="color-box" style="background-color: ${color}">${color}</div>`).join('')}
+          </div>
+        `;
+        container.appendChild(div);
+      }
+    }
+
+    renderPalettes();
+  </script>
+</body>
+</html>
