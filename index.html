@@ -24,10 +24,14 @@
 </head>
 <body>
 
-  <h2>请输入会员密码进入网站</h2>
-  <input type="password" id="pass" placeholder="输入密码">
-  <button onclick="check()">登录</button>
+  <!-- 登录区域包裹在 login 中 -->
+  <div id="login">
+    <h2>请输入会员密码进入网站</h2>
+    <input type="password" id="pass" placeholder="输入密码" onkeydown="if(event.key==='Enter') check()">
+    <button onclick="check()">登录</button>
+  </div>
 
+  <!-- 登录成功后显示的会员区域 -->
   <div id="secret">
     <iframe src="member.html"></iframe>
   </div>
@@ -35,8 +39,9 @@
   <script>
     function check() {
       const input = document.getElementById('pass').value;
-      const real = atob('MA=='); // base64 编码后的 "0"
+      const real = atob('MA=='); // base64 编码的 "0"
       if (input === real) {
+        document.getElementById('login').style.display = 'none';
         document.getElementById('secret').style.display = 'block';
       } else {
         alert('密码错误！');
