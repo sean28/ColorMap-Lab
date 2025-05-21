@@ -1,1 +1,3 @@
 # ColorMap-Lab
+<div style="text-align: justify"> ColorMap Lab is a lightweight, web-based tool designed for researchers, designers, and developers to preview and explore a curated collection of color gradient palettes. It allows users to display up to 21 predefined color schemes, each smoothly interpolated into 10 gradient steps. These palettes are particularly useful for data visualization, scientific figures, or presentation design. I redeployed this online tool in my repository and you can use this tool for free by clicking <a href="https://sean28.github.io/ColorMap-Lab/">here</a>.</div>
+<div style="text-align: justify"> <br> </div>
